@@ -1,0 +1,240 @@
+﻿@page "/AFFO_Random_Scenarios"
+@rendermode InteractiveServer
+@using Saga.Controllers;
+@using Saga.Model
+@using Debugger = Debugland.Debugger;
+
+
+<PageTitle>Counter</PageTitle>
+<div style="text-align:center">
+    <button class="btn" @onclick="GenerateScenarios">Generate a random scenario with all cards</button>
+</div>
+<div style="text-align:center">
+    <button class="btn" @onclick="ViewGenerateEasyScenario">Generate Easy Scenario</button>
+    <button class="btn" @onclick="ViewGenerateMediumScenario">Generate Medium Scenario</button>
+    <button class="btn" @onclick="ViewGenerateHardScenario">Generate Hard Scenario</button>
+
+</div>
+<div style="margin: 0 auto;
+        max-width: 800px; /* Adjust the maximum width as needed */
+        text-align: left; ">
+    <p>
+        This is meant for a <b>SOLO playthough</b>. A few extra rules are as follows:
+    <p>1. Draw your starting bow, spear, snare, and mead.</p>
+    <p>2. Shuffle your weapon deck</p>
+    <p>3. Take starting occupation as seen below</p>
+    <p>4. Whenever you need to draw a new occupation card, simply take the next card from the shuffled list provided below.</p>
+
+    </p>
+</div>
+<h1 style="font-family: Norse; text-align:center">A New Saga begins</h1>
+<div class="container">
+    <p>
+        Tonight, we feast, my honored clansmen," proclaimed the skilled <b>@randomStartingCard?.Name</b> beckoning all. The air is thick with the
+        aroma of roasted meats, spiced ale arranged by the renowned <b>@randomCards?.FirstOrDefault()?.Name</b>, and hearty bread, a
+        s the feast table groans under the weight of abundant fare.
+        Succulent boar, freshly-caught salmon, and bowls overflowing with fruits, nuts, and wild berries
+        tempt every palate. Amidst the revelry, skalds regale the assembly with epic sagas, igniting the flames
+        of courage and camaraderie in the hearts of those who raise their horns in celebration of the enduring
+        spirit of the Viking way of life. As the fire crackles and shadows dance, this saga promises to be whispered
+        of for generations to come, marked by the cunning schemes of the <b>@randomCards?.Skip(1)?.FirstOrDefault()?.Name</b> and the hearty brews of the
+        skilled <b>@randomCards?.Skip(2)?.FirstOrDefault()?.Name</b>.
+    </p>
+</div>
+
+
+
+
+<div class="grid-container" style="align-items: center; justify-content: center; display: flex;">
+    @if (randomStartingCard != null)
+    {
+        <div class="grid-item">
+            <h3 style="font-family: monospace; font-size:16px">@randomStartingCard.Name</h3>
+            <img src="@randomStartingCard.Image" alt="@randomStartingCard.Name" width="63" height="101" />
+            <p>@randomStartingCard.Number @randomStartingCard.Deck</p>
+        </div>
+    }
+</div>
+
+<h2 style="font-family: Norse; text-align:center">Occupation Cards used for this Saga</h2>
+<p>
+    Gather these cards and shuffle them into the deck. They're the only Occupation cards available for this playthrough.
+</p>
+@if (randomCards != null)
+{
+    <div class="grid-container" style="align-items: center; justify-content: center;">
+        @foreach (var card in randomCards)
+        {
+            <div class="grid-item">
+                <h3 style="font-family: monospace; font-size:16px">@card.Name</h3>
+                <img src="@card.Image" alt="@card.Name" width="63" height="101" />
+                <p>@card.Number @card.Deck</p>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No cards to display</p>
+}
+
+
+@code {
+
+    int userInput = 10;
+    UserControl userControl = new();
+    private List<OccupationCard>? Cards = new List<OccupationCard>();
+    private List<OccupationCard>? randomCards = new List<OccupationCard>();
+    private OccupationCard? randomStartingCard = new OccupationCard();
+
+    private void GenerateScenarios()
+    {
+        Debugger.MethodInitiated("GenerateScenarios");
+        userControl.GenerateScenarios();
+        // Opdater visningen efter generering af scenarierne
+
+        ViewRandomCard();
+        ViewRandomStartingCard();
+        Debugger.MethodTerminated("GenerateScenarios");
+    }
+    protected override void OnInitialized()
+    {
+        Debugger.MethodInitiated("OnInitialized");
+        ViewCards();
+        ViewRandomCard();
+        ViewRandomStartingCard();
+        Debugger.MethodTerminated("OnInitialized");
+    }
+    #region Random with all cards
+    private void ViewCards()
+    {
+        Debugger.MethodInitiated("ViewCards");
+
+        Cards = userControl.GetCards();
+        Debugger.MethodTerminated("ViewCards");
+
+    }
+    private void ViewRandomCard()
+    {
+        Debugger.MethodInitiated("ViewRandomCard");
+
+        randomCards = userControl.GetRandomOccupationCard(userInput);
+
+        Debugger.MethodTerminated("ViewRandomCard");
+
+    }
+    private void ViewRandomStartingCard()
+    {
+        Debugger.MethodInitiated("ViewRandomStartingCard");
+
+        randomStartingCard = userControl.GetRandomStartingOccupationCard();
+        Debugger.MethodInitiated("ViewRandomStartingCard");
+
+    }
+    #endregion
+
+    private void ViewGenerateEasyScenario()
+    {
+        Debugger.MethodInitiated("GenerateEasyScenario");
+        userControl.GenerateScenarioWithDifficulty();
+        ViewRandomEasyOccuCards();
+        ViewRandomEasyStartingOccuCards();
+        Debugger.MethodTerminated("GenerateEasyScenario");
+    }
+    public void ViewRandomEasyOccuCards()
+    {
+        randomCards = userControl.GetRandomDifficultyOccupationCard('A', userInput);
+    }
+    public void ViewRandomEasyStartingOccuCards()
+    {
+        randomStartingCard = userControl.GetRandomDifficultyStartingOccupationCard('a');
+    }
+
+    private void ViewGenerateMediumScenario()
+    {
+        Debugger.MethodInitiated("GenerateEasyScenario");
+        userControl.GenerateScenarioWithDifficulty();
+        ViewRandomMediumOccuCards();
+        ViewRandomMediumStartingOccuCards();
+        Debugger.MethodTerminated("GenerateEasyScenario");
+    }
+    public void ViewRandomMediumOccuCards()
+    {
+        randomCards = userControl.GetRandomDifficultyOccupationCard('B', userInput);
+    }
+    public void ViewRandomMediumStartingOccuCards()
+    {
+        randomStartingCard = userControl.GetRandomDifficultyStartingOccupationCard('b');
+    }
+
+    private void ViewGenerateHardScenario()
+    {
+        Debugger.MethodInitiated("GenerateEasyScenario");
+        userControl.GenerateScenarioWithDifficulty();
+        ViewRandomHardOccuCards();
+        ViewRandomHardStartingOccuCards();
+        Debugger.MethodTerminated("GenerateEasyScenario");
+    }
+    public void ViewRandomHardOccuCards()
+    {
+        randomCards = userControl.GetRandomDifficultyOccupationCard('C', userInput);
+    }
+    public void ViewRandomHardStartingOccuCards()
+    {
+        randomStartingCard = userControl.GetRandomDifficultyStartingOccupationCard('c');
+    }
+
+
+
+
+}
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 5px;
+    }
+
+    .grid-item {
+        border: 0px solid #ccc;
+        padding: 10px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        margin: 0 auto;
+        max-width: 800px; /* Adjust the maximum width as needed */
+        text-align: center;
+    }
+
+    .btn {
+        background-color: #fff;
+        border: 0 solid #e2e8f0;
+        border-radius: 1.5rem;
+        box-sizing: border-box;
+        color: #0d172a;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 1.1rem;
+        line-height: 1;
+        padding: 10px;
+        text-align: center;
+        text-decoration: none #0d172a solid;
+        text-decoration-thickness: auto;
+        transition: all .1s cubic-bezier(.4, 0, .2, 1);
+        box-shadow: 0px 1px 2px rgba(166, 175, 195, 0.25);
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+    }
+
+        .btn:hover {
+            background-color: #1e293b;
+            color: #fff;
+        }
+</style>
+

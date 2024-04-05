@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Image\BirkaSettler.png" />
+    <None Include="wwwroot\Image\Clerk.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Debugland" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.2" />
+  </ItemGroup>
+
+</Project>

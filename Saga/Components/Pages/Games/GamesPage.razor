@@ -1,0 +1,25 @@
+﻿@page "/GamesPage"
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager NavigationManager
+@using Debugger = Debugland.Debugger
+@using Saga.Controllers
+
+<h3>GamesPage</h3>
+
+<h1>Choose a game</h1>
+
+
+<a @onclick="GoToAFFOMain" href="/AFFO_Main">
+    <img src="/Games/A_feast_For_Odin.png" alt="A Feast for Odin" width="130" height="200">
+</a>
+
+
+@code {
+    private void GoToAFFOMain()
+    {
+        Debugger.MethodInitiated("GoToAFFOMain");
+        NavigationManager.NavigateTo("/AFFO_Main");
+        Debugger.MethodTerminated("GoToAFFOMain");
+    }
+}
